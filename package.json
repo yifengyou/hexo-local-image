@@ -1,0 +1,24 @@
+{
+  "name": "hexo-local-image",
+  "version": "1.0.0",
+  "description": "Give asset image in hexo a absolutely path automatically",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yifengyou/hexo-local-image.git"
+  },
+  "keywords": [
+    "hexo",
+    "local",
+    "image"
+  ],
+  "author": "yifengyou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yifengyou/hexo-local-image/issues"
+  },
+  "homepage": "https://github.com/yifengyou/hexo-local-image#readme"
+}
