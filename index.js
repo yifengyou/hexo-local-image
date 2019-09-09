@@ -2,68 +2,82 @@
 var cheerio = require('cheerio');
 
 // http://stackoverflow.com/questions/14480345/how-to-get-the-nth-occurrence-in-a-string
-function getPosition(str, m, i) {
-  return str.split(m, i).join(m).length;
+function getPosition(str, m, i)
+{
+    return str.split(m, i).join(m).length;
 }
 
 var version = String(hexo.version).split('.');
-hexo.extend.filter.register('after_post_render', function(data){
-  var config = hexo.config;
-  if(config.post_asset_folder){
-    	var link = data.permalink;
-	if(version.length > 0 && Number(version[0]) == 3)
-	   var beginPos = getPosition(link, '/', 1) + 1;
-	else
-	   var beginPos = getPosition(link, '/', 3) + 1;
-	// In hexo 3.1.1, the permalink of "about" page is like ".../about/index.html".
-	var endPos = link.lastIndexOf('/') + 1;
-    link = link.substring(beginPos, endPos);
-	console.info&&console.info("link.substring:-->"+link);
+hexo.extend.filter.register('after_post_render', function (data)
+{
+    var config = hexo.config;
+    if (config.post_asset_folder)
+    {
+        var link = data.permalink;
+		//http://localhost:4000/2019/09/03/hello-world/
+        
+        var beginPos = getPosition(link, '/', 3) ;
+		// Get position ，the beginning of '/2019/09/03/hello-world/'
+		// Use relative path
+		
 
-    var toprocess = ['excerpt', 'more', 'content'];
-    for(var i = 0; i < toprocess.length; i++){
-      var key = toprocess[i];
- 
-      var $ = cheerio.load(data[key], {
-        ignoreWhitespace: false,
-        xmlMode: false,
-        lowerCaseTags: false,
-        decodeEntities: false
-      });
-
-      $('img').each(function(){
-		if ($(this).attr('src')){
-			// For windows style path, we replace '\' to '/'.
-			var src = $(this).attr('src').replace('\\', '/');
-			if(!/http[s]*.*|\/\/.*/.test(src) &&
-			   !/^\s*\//.test(src)) {
-			  // For "about" page, the first part of "src" can't be removed.
-			  // In addition, to support multi-level local directory.
-			  var linkArray = link.split('/').filter(function(elem){
-				return elem != '';
-			  });
-			  var srcArray = src.split('/').filter(function(elem){
-				return elem != '' && elem != '.';
-			  });
-			  if(srcArray.length > 1)
-				srcArray.shift();
-			  src = srcArray.join('/');
-			  //$(this).attr('src', config.root + link + src);
-			  $(this).attr('src', link + src);
-			  console.info&&console.info("==================================================");
-			  console.info&&console.info("update link as:-->"+config.root + link + src);
-			  console.info&&console.info("config.root:-->"+config.root);
-			  console.info&&console.info("link:-->"+link);
-			  console.info&&console.info("src:-->" + src);
-			  console.info&&console.info("hexo.config:-->" + hexo.config);
-			  console.info&&console.info("==================================================");
-			}
-		}else{
-			console.info&&console.info("no src attr, skipped...");
-			console.info&&console.info($(this));
-		}
-      });
-      data[key] = $.html();
+        var endPos = link.lastIndexOf('/') + 1;
+        link = link.substring(beginPos, endPos);
+        //console.info && console.info("link.substring:-->" + link);
+		// link is "/2019/09/03/hello-world/"
+        
+        var toprocess = ['excerpt', 'more', 'content'];
+        for (var i = 0; i < toprocess.length; i++)
+        {
+            var key = toprocess[i];
+            
+            var $ = cheerio.load(data[key],
+                {
+                    ignoreWhitespace : false,
+                    xmlMode : false,
+                    lowerCaseTags : false,
+                    decodeEntities : false
+                }
+                );
+            
+            $('img').each(function ()
+            {
+                if ($(this).attr('src'))
+                {
+                    // For windows style path, we replace '\' to '/'.
+                    var src = $(this).attr('src').replace('\\', '/');
+                    if (!/http[s]*.*|\/\/.*/.test(src) &&  !/^\s*\//.test(src))
+                    {
+                        // For "about" page, the first part of "src" can't be removed.
+                        // In addition, to support multi-level local directory.
+                        var linkArray = link.split('/').filter(function (elem)
+                            {
+                                return elem != '';
+                            }
+                            );
+                        var srcArray = src.split('/').filter(function (elem)
+                            {
+                                return elem != '' && elem != '.';
+                            }
+                            );
+                        if (srcArray.length > 1)
+                            srcArray.shift();
+                        src = srcArray.join('/');
+                        //$(this).attr('src', config.root + link + src);
+                        $(this).attr('src', link + src);
+						// src is "/2019/09/05/hexo快速上手/20190905_104109_97.png"
+						// Relative path，must beginning with '/'
+                    }
+                }
+                else
+                {
+                    console.info && console.info("no src attr, skipped...");
+                    console.info && console.info($(this));
+                }
+            }
+            );
+            data[key] = $.html();
+        }
     }
-  }
-});
+}
+);

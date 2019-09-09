@@ -1,12 +1,12 @@
-# hexo-asset-image
+# hexo-local-image
 
 
-Give asset image in hexo a absolutely path automatically
+Give local image in hexo a relative path automatically
 
 # Usege
 
 ```shell
-npm install hexo-asset-image --save
+npm install hexo-local-image --save
 ```
 
 # Example
@@ -14,15 +14,15 @@ npm install hexo-asset-image --save
 ```shell
 MacGesture2-Publish
 ├── apppicker.jpg
-├── logo.jpg
+├── image.jpg
 └── rules.jpg
 MacGesture2-Publish.md
 ```
 
 Make sure `post_asset_folder: true` in your `_config.yml`.
 
-Just use `![logo](logo.jpg)` to insert `logo.jpg`.
+Just use `![logo](${MDFileName}/image.jpg)` to insert `image.jpg`.
 
 # History
 
-2018-04-18: support hexo-abbrlink
+* 2019-09-09: support hexo-relativelink
